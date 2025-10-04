@@ -1,7 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import * as helmet from 'helmet';
-
 /**
  * Security Middleware
  * Implements security headers and protections
