@@ -21,7 +21,6 @@ import { AppService } from './app.service';
 // Middleware
 import { LoggingMiddleware } from './middleware/logging.middleware';
 import { SecurityMiddleware } from './middleware/security.middleware';
-import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 
 /**
  * Application Module
@@ -73,10 +72,6 @@ export class AppModule implements NestModule {
     
     consumer
       .apply(LoggingMiddleware)
-      .forRoutes('*');
-    
-    consumer
-      .apply(RateLimitMiddleware)
       .forRoutes('*');
   }
 }

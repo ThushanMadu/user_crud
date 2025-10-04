@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { getImageUrl, isValidImageUrl } from '@/utils/imageUtils';
 import { 
   Plus, 
   Search, 
@@ -178,17 +179,21 @@ const Home: React.FC = () => {
             {filteredProducts.map((product) => (
               <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-w-16 aspect-h-9 bg-gray-200">
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-48 object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-gray-400" />
-                    </div>
-                  )}
+                  {(() => {
+                    const validImage = product.images?.find(img => img && img !== null);
+                    const imageUrl = validImage || undefined;
+                    return product.images && product.images.length > 0 && validImage ? (
+                      <img
+                        src={imageUrl}
+                        alt={product.name}
+                        className="w-full h-48 object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                        <ImageIcon className="h-12 w-12 text-gray-400" />
+                      </div>
+                    );
+                  })()}
                 </div>
                 
                 <CardHeader>
@@ -243,4 +248,6 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+
 

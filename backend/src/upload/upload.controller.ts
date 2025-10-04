@@ -96,6 +96,13 @@ export class UploadController {
     }
 
     const result = await this.uploadService.uploadProductImage(file, productId);
+
+    // Update product with new image path
+    if (result.response.success) {
+      product.images.push(result.response.data.url);
+      await product.save();
+    }
+
     return res.status(result.statusCode).json(result.response);
   }
 

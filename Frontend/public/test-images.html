@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .image-test { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        img { max-width: 200px; max-height: 200px; margin: 10px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Image Loading Test</h1>
+    
+    <div class="image-test">
+        <h3>Test Image 1:</h3>
+        <img src="/uploads/products/68e0bb189fa09308d001a638/12b9f9c1-e88a-4e1b-aeca-5f42934b4c1d.png" 
+             alt="Test Image 1" 
+             onload="console.log('Image 1 loaded successfully'); document.getElementById('status1').innerHTML = '✅ Image 1 loaded successfully';"
+             onerror="console.error('Image 1 failed to load'); document.getElementById('status1').innerHTML = '❌ Image 1 failed to load';">
+        <div id="status1" class="error">Loading...</div>
+    </div>
+    
+    <div class="image-test">
+        <h3>Test Image 2:</h3>
+        <img src="/uploads/products/68e0b58674c37e76db5e0d62/a2057fdb-e2d5-4cfd-9d78-ab402be856e9.png" 
+             alt="Test Image 2" 
+             onload="console.log('Image 2 loaded successfully'); document.getElementById('status2').innerHTML = '✅ Image 2 loaded successfully';"
+             onerror="console.error('Image 2 failed to load'); document.getElementById('status2').innerHTML = '❌ Image 2 failed to load';">
+        <div id="status2" class="error">Loading...</div>
+    </div>
+    
+    <div class="image-test">
+        <h3>Console Log:</h3>
+        <div id="console-log"></div>
+    </div>
+    
+    <script>
+        // Override console.log to show in page
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            document.getElementById('console-log').innerHTML += '<div class="success">LOG: ' + args.join(' ') + '</div>';
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            document.getElementById('console-log').innerHTML += '<div class="error">ERROR: ' + args.join(' ') + '</div>';
+        };
+    </script>
+</body>
+</html>

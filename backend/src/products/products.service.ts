@@ -44,7 +44,17 @@ export class ProductsService {
 
     return {
       response: createSuccessResponse(
-        savedProduct.getFormattedProduct(),
+        {
+          id: savedProduct._id.toString(),
+          name: savedProduct.name,
+          description: savedProduct.description,
+          price: parseFloat(savedProduct.price.toString()),
+          images: savedProduct.images || [],
+          isActive: savedProduct.isActive,
+          userId: savedProduct.userId,
+          createdAt: savedProduct.createdAt,
+          updatedAt: savedProduct.updatedAt,
+        },
         SUCCESS_MESSAGES.PRODUCT_CREATED,
       ),
       statusCode: 201,
@@ -98,7 +108,17 @@ export class ProductsService {
       this.productModel.countDocuments(query).exec(),
     ]);
 
-    const formattedProducts = products.map(product => product.getFormattedProduct());
+    const formattedProducts = products.map(product => ({
+      id: product._id.toString(),
+      name: product.name,
+      description: product.description,
+      price: parseFloat(product.price.toString()),
+      images: product.images || [],
+      isActive: product.isActive,
+      userId: product.userId,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+    }));
 
     return {
       response: createPaginatedResponse(
@@ -138,7 +158,17 @@ export class ProductsService {
 
     return {
       response: createSuccessResponse(
-        product.getFormattedProduct(),
+        {
+          id: product._id.toString(),
+          name: product.name,
+          description: product.description,
+          price: parseFloat(product.price.toString()),
+          images: product.images || [],
+          isActive: product.isActive,
+          userId: product.userId,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        },
         'Product retrieved successfully',
       ),
       statusCode: 200,
@@ -178,7 +208,17 @@ export class ProductsService {
 
     return {
       response: createSuccessResponse(
-        updatedProduct.getFormattedProduct(),
+        {
+          id: updatedProduct._id.toString(),
+          name: updatedProduct.name,
+          description: updatedProduct.description,
+          price: parseFloat(updatedProduct.price.toString()),
+          images: updatedProduct.images || [],
+          isActive: updatedProduct.isActive,
+          userId: updatedProduct.userId,
+          createdAt: updatedProduct.createdAt,
+          updatedAt: updatedProduct.updatedAt,
+        },
         SUCCESS_MESSAGES.PRODUCT_UPDATED,
       ),
       statusCode: 200,
