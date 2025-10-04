@@ -51,8 +51,8 @@ export class UploadService {
       }
 
       // Generate unique filename
-      const fileExtension = path.extname(file.originalname);
-      const uniqueFilename = generateUniqueFilename(file.originalname);
+      const fileExtension = path.extname(file.originalname).toLowerCase();
+      const uniqueFilename = `${uuidv4()}${fileExtension}`;
       const filePath = path.join(productImagesDir, uniqueFilename);
 
       // Process image with Sharp (resize, optimize)
