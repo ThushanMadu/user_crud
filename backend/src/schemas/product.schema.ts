@@ -1,7 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type ProductDocument = Product & Document;
+export type ProductDocument = Product & Document & {
+  getFormattedProduct(): any;
+  addImage(imageUrl: string): void;
+  removeImage(imageUrl: string): void;
+};
 
 /**
  * Product Schema
@@ -74,6 +78,28 @@ export const ProductSchema = SchemaFactory.createForClass(Product);
 ProductSchema.virtual('id').get(function() {
   return this._id.toHexString();
 });
+
+// Add instance methods
+ProductSchema.methods.getFormattedProduct = function() {
+  const obj = this.toObject ? this.toObject() : this;
+  return {
+    ...obj,
+    price: parseFloat(this.price.toString()),
+  };
+};
+
+ProductSchema.methods.addImage = function(imageUrl: string) {
+  if (!this.images) {
+    this.images = [];
+  }
+  this.images.push(imageUrl);
+};
+
+ProductSchema.methods.removeImage = function(imageUrl: string) {
+  if (this.images) {
+    this.images = this.images.filter(img => img !== imageUrl);
+  }
+};
 
 // Ensure virtual fields are serialized
 ProductSchema.set('toJSON', {

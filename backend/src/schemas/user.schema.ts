@@ -3,7 +3,10 @@ import { Document } from 'mongoose';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 
-export type UserDocument = User & Document;
+export type UserDocument = User & Document & {
+  comparePassword(password: string): Promise<boolean>;
+  getProfile(): any;
+};
 
 /**
  * User Schema
@@ -37,24 +40,6 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
 
-  /**
-   * Compare password with hashed password
-   * @param password - Plain text password
-   * @returns Promise<boolean>
-   */
-  async comparePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
-
-  /**
-   * Get user profile without sensitive data
-   * @returns User profile object
-   */
-  getProfile() {
-    const obj = (this as any).toObject ? (this as any).toObject() : this;
-    const { password, ...profile } = obj;
-    return profile;
-  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -75,18 +60,46 @@ UserSchema.set('toJSON', {
 });
 
 // Hash password before saving
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+// DISABLED - Password hashing handled manually in auth service
+// UserSchema.pre('save', async function(next) {
+//   if (!this.isModified('password')) return next();
+//   
+//   try {
+//     const salt = await bcrypt.genSalt(12);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-// Index for email
-UserSchema.index({ email: 1 });
+// Add instance methods
+UserSchema.methods.comparePassword = async function(password: string): Promise<boolean> {
+  console.log('Comparing password:', password, 'with hash:', this.password);
+  const result = await bcrypt.compare(password, this.password);
+  console.log('Password comparison result:', result);
+  return result;
+};
+
+UserSchema.methods.getProfile = function() {
+  const obj = this.toObject ? this.toObject() : this;
+  const { password, ...profile } = obj;
+  return profile;
+};
+
+// Hash password before saving
+// DISABLED - Password hashing handled manually in auth service
+// UserSchema.pre('save', async function(next) {
+//   if (!this.isModified('password')) return next();
+//   
+//   try {
+//     const salt = await bcrypt.genSalt(12);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// Index for isActive (email index is automatically created by unique: true)
 UserSchema.index({ isActive: 1 });

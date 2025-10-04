@@ -1,7 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type RefreshTokenDocument = RefreshToken & Document;
+export type RefreshTokenDocument = RefreshToken & Document & {
+  isExpired(): boolean;
+  revoke(): void;
+};
 
 /**
  * Refresh Token Schema
@@ -33,20 +36,6 @@ export class RefreshToken {
   // Timestamps
   createdAt: Date;
 
-  /**
-   * Check if token is expired
-   * @returns True if token is expired
-   */
-  isExpired(): boolean {
-    return new Date() > this.expiresAt;
-  }
-
-  /**
-   * Revoke the token
-   */
-  revoke() {
-    this.isActive = false;
-  }
 }
 
 export const RefreshTokenSchema = SchemaFactory.createForClass(RefreshToken);
@@ -66,9 +55,19 @@ RefreshTokenSchema.set('toJSON', {
   }
 });
 
+// Add instance methods
+RefreshTokenSchema.methods.isExpired = function(): boolean {
+  return new Date() > this.expiresAt;
+};
+
+RefreshTokenSchema.methods.revoke = function() {
+  this.isActive = false;
+};
+
 // Indexes
 RefreshTokenSchema.index({ token: 1 });
 RefreshTokenSchema.index({ userId: 1 });
 RefreshTokenSchema.index({ isActive: 1 });
 RefreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 
