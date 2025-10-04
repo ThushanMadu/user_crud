@@ -7,6 +7,8 @@ import Register from '@/pages/Register';
 import Home from '@/pages/Home';
 import Profile from '@/pages/Profile';
 import ProductForm from '@/pages/ProductForm';
+import SimpleProductForm from '@/pages/SimpleProductForm';
+import TestPage from '@/pages/TestPage';
 import { Loader2 } from 'lucide-react';
 
 // Protected Route Component
@@ -79,11 +81,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route
         path="/product/new"
-        element={
-          <ProtectedRoute>
-            <ProductForm />
-          </ProtectedRoute>
-        }
+        element={<ProductForm />}
       />
       <Route
         path="/product/:id/edit"
@@ -92,6 +90,14 @@ const AppRoutes: React.FC = () => {
             <ProductForm />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/test"
+        element={<TestPage />}
+      />
+      <Route
+        path="/simple-product"
+        element={<SimpleProductForm />}
       />
 
       {/* Default redirect */}

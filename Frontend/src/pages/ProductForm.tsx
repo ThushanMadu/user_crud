@@ -7,9 +7,9 @@ import { productAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getImageUrl } from '@/utils/imageUtils';
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
-  ArrowLeft, 
   Upload, 
   X, 
   Loader2, 
@@ -31,6 +31,8 @@ const ProductForm: React.FC = () => {
   const isEdit = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
@@ -114,19 +116,16 @@ const ProductForm: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Simple Test Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => navigate('/home')}
-              className="mr-4"
+              className="mr-4 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
+              ← Back
+            </button>
             <h1 className="text-xl font-bold text-gray-900">
               {isEdit ? 'Edit Product' : 'Add New Product'}
             </h1>
@@ -135,17 +134,15 @@ const ProductForm: React.FC = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>{isEdit ? 'Edit Product' : 'Create New Product'}</CardTitle>
-            <CardDescription>
-              {isEdit 
-                ? 'Update your product information' 
-                : 'Add a new product to your inventory'
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-2xl font-bold mb-2">{isEdit ? 'Edit Product' : 'Create New Product'}</h2>
+          <p className="text-gray-600 mb-6">
+            {isEdit 
+              ? 'Update your product information' 
+              : 'Add a new product to your inventory'
+            }
+          </p>
+          <div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -225,7 +222,7 @@ const ProductForm: React.FC = () => {
                 {/* Image Preview */}
                 {images.length > 0 && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {images.map((image, index) => (
+                    {images.filter(img => img && img !== null).map((image, index) => (
                       <div key={index} className="relative group">
                         <img
                           src={image}
@@ -268,8 +265,8 @@ const ProductForm: React.FC = () => {
                 </Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
