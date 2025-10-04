@@ -17,21 +17,17 @@ export class LoggingMiddleware implements NestMiddleware {
     // Log request
     this.logger.log(`${method} ${originalUrl} - ${ip} - ${userAgent}`);
 
-    // Override res.end to log response
-    const originalEnd = res.end;
-    res.end = function(chunk?: any, encoding?: any) {
+    // Log response on finish event
+    res.on('finish', () => {
       const duration = Date.now() - startTime;
       const { statusCode } = res;
-      
-      // Log response
+
       if (statusCode >= 400) {
         this.logger.error(`${method} ${originalUrl} - ${statusCode} - ${duration}ms`);
       } else {
         this.logger.log(`${method} ${originalUrl} - ${statusCode} - ${duration}ms`);
       }
-      
-      originalEnd.call(this, chunk, encoding);
-    }.bind(res);
+    });
 
     next();
   }
