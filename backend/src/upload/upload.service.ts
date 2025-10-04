@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, UPLOAD_CONSTANTS } from '../constants/app.constants';
 import { createSuccessResponse } from '../utils/response.util';
 import { isValidImageType, isValidFileSize, generateUniqueFilename } from '../utils/validation.util';
