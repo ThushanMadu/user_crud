@@ -92,6 +92,29 @@ export class ProductsController {
   }
 
   /**
+   * Get product statistics for current user
+   * @param user - Current user
+   * @param res - Express response object
+   */
+  @Get('stats/overview')
+  @ApiOperation({ summary: 'Get product statistics for current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product statistics retrieved successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  async getProductStats(
+    @CurrentUser() user: UserDocument,
+    @Res() res: Response,
+  ) {
+    const result = await this.productsService.getProductStats(user);
+    return res.status(result.statusCode).json(result.response);
+  }
+
+  /**
    * Get a single product by ID
    * @param id - Product ID
    * @param user - Current user
@@ -199,26 +222,4 @@ export class ProductsController {
     return res.status(result.statusCode).json(result.response);
   }
 
-  /**
-   * Get product statistics for current user
-   * @param user - Current user
-   * @param res - Express response object
-   */
-  @Get('stats/overview')
-  @ApiOperation({ summary: 'Get product statistics for current user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Product statistics retrieved successfully',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
-  })
-  async getProductStats(
-    @CurrentUser() user: UserDocument,
-    @Res() res: Response,
-  ) {
-    const result = await this.productsService.getProductStats(user);
-    return res.status(result.statusCode).json(result.response);
-  }
 }

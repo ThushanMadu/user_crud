@@ -48,6 +48,20 @@ export class AuthController {
   })
   async register(@Body() registerDto: RegisterDto, @Res() res: Response) {
     const result = await this.authService.register(registerDto);
+    
+    // Set refresh token as HttpOnly cookie
+    if (result.response.success && result.response.data.refreshToken) {
+      res.cookie(JWT_CONSTANTS.REFRESH_TOKEN_COOKIE_NAME, result.response.data.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+      
+      // Remove refresh token from response body for security
+      delete result.response.data.refreshToken;
+    }
+    
     return res.status(result.statusCode).json(result.response);
   }
 
@@ -70,6 +84,20 @@ export class AuthController {
   })
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const result = await this.authService.login(loginDto);
+    
+    // Set refresh token as HttpOnly cookie
+    if (result.response.success && result.response.data.refreshToken) {
+      res.cookie(JWT_CONSTANTS.REFRESH_TOKEN_COOKIE_NAME, result.response.data.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+      
+      // Remove refresh token from response body for security
+      delete result.response.data.refreshToken;
+    }
+    
     return res.status(result.statusCode).json(result.response);
   }
 
@@ -93,6 +121,20 @@ export class AuthController {
   async refresh(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies?.[JWT_CONSTANTS.REFRESH_TOKEN_COOKIE_NAME];
     const result = await this.authService.refresh(refreshToken);
+    
+    // Set new refresh token as HttpOnly cookie
+    if (result.response.success && result.response.data.refreshToken) {
+      res.cookie(JWT_CONSTANTS.REFRESH_TOKEN_COOKIE_NAME, result.response.data.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+      
+      // Remove refresh token from response body for security
+      delete result.response.data.refreshToken;
+    }
+    
     return res.status(result.statusCode).json(result.response);
   }
 

@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
-import { createErrorResponse } from './utils/response.util';
-import { HTTP_STATUS } from './constants/app.constants';
 
 /**
  * Bootstrap the application
@@ -39,8 +37,8 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: configService.get<string>('app.cors.origin'),
-    credentials: configService.get<boolean>('app.cors.credentials'),
+    origin: true, // Allow all origins for development
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
@@ -60,14 +58,10 @@ async function bootstrap() {
           message: Object.values(error.constraints || {}).join(', '),
         }));
 
-        return {
-          response: createErrorResponse(
-            'Validation failed',
-            formattedErrors,
-            HTTP_STATUS.UNPROCESSABLE_ENTITY,
-          ).response,
-          statusCode: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-        };
+        return new UnprocessableEntityException({
+          message: 'Validation failed',
+          errors: formattedErrors,
+        });
       },
     }),
   );

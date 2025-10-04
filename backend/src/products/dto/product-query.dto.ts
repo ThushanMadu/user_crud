@@ -14,7 +14,7 @@ export class ProductQueryDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => value !== undefined ? parseInt(value, 10) : undefined)
   @IsNumber()
   @Min(1)
   page?: number = 1;
@@ -27,7 +27,7 @@ export class ProductQueryDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => value !== undefined ? parseInt(value, 10) : undefined)
   @IsNumber()
   @Min(1)
   @Max(100)

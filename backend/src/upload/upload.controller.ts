@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import * as path from 'path';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiConsumes } from '@nestjs/swagger';
 import { UploadService } from './upload.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -145,7 +146,16 @@ export class UploadController {
       });
     }
 
-    const filePath = `uploads/products/${productId}/${filename}`;
+    // Validate filename to prevent path traversal
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid filename',
+      });
+    }
+
+    // Use path.join for secure path construction
+    const filePath = path.join('uploads', 'products', productId, filename);
     const result = await this.uploadService.deleteFile(filePath);
     
     return res.status(result.statusCode).json(result.response);
