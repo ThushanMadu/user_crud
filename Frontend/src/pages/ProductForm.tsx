@@ -31,7 +31,6 @@ const ProductForm: React.FC = () => {
   const isEdit = Boolean(id);
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
-  const [, setUploadedFiles] = useState<File[]>([]);
 
   const {
     register,
