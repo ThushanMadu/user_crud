@@ -42,7 +42,6 @@ const ProductForm: React.FC = () => {
     resolver: zodResolver(productSchema),
   });
 
-  // const watchedPrice = watch('price');
 
   useEffect(() => {
     if (isEdit && id) {
