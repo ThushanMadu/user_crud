@@ -111,16 +111,6 @@ const ProductForm: React.FC = () => {
     setUploadedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  // const uploadImagesToServer = async (productId: string) => {
-  //   for (const file of uploadedFiles) {
-  //     try {
-  //       await productAPI.uploadImage(productId, file);
-  //     } catch (error) {
-  //       console.error('Failed to upload image:', error);
-  //       toast.error(`Failed to upload ${file.name}`);
-  //     }
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-gray-50">
