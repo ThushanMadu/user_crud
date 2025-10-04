@@ -1,0 +1,25 @@
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+import * as helmet from 'helmet';
+
+/**
+ * Security Middleware
+ * Implements security headers and protections
+ */
+@Injectable()
+export class SecurityMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    // Set security headers
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+
+    // Remove X-Powered-By header
+    res.removeHeader('X-Powered-By');
+
+    next();
+  }
+}
+
