@@ -30,3 +30,5 @@ export function getImageUrl(imagePath: string | null | undefined): string {
 export function isValidImageUrl(imagePath: string | null | undefined): boolean {
   return Boolean(imagePath && imagePath.trim() !== '');
 }
+
+
